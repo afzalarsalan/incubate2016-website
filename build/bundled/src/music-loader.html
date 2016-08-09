@@ -1,0 +1,20 @@
+<html><head><link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="http://cdn.peerjs.com/0.3/peer.js"></script>
+<script src="jsmediatags.min.js"></script>
+
+</head><body><dom-module id="music-loader">
+
+  
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+  </template>
+
+  
+  <script>Polymer({is:"music-loader",properties:{audiocontext:{type:Object},audiobuffer:{type:Object},song:{type:Object},files:{type:Object,notify:!0},peer:{type:Object},peerid:{type:String,notify:!0},peerstream:{type:Object,notify:!0,value:null}},observers:["addtoQueue(files)"],created:function(){},ready:function(){try{window.AudioContext=window.AudioContext||window.webkitAudioContext,this.audiocontext=new AudioContext}catch(e){alert("Web Audio API is not supported in this browser")}var e=this.audiocontext.createMediaStreamDestination();this.peerstream=e.stream},attached:function(){var e=this;this.peer=new Peer({host:"13.84.151.108",port:9e3}),this.peer.on("open",function(o){console.log("My peer ID is"+o),e.peerid=o}),this.peer.on("call",function(o){console.log("Recieved call"),o.answer(e.stream),o.on("stream",function(o){console.log("Recieved stream"),e.peerstream=o})})},addtoQueue:function(e){if(e){var o=window.jsmediatags,t=this,n=this.audiocontext;console.log(n);for(var i=0;i<e.length;i++){var a=e[i];console.log(a),o.read(a,{onSuccess:function(e){var o={title:e.tags.title,artist:e.tags.artist,album:e.tags.album,picture:e.tags.picture,data:a};onsole.log(t.songs),onsole.log(t),t.push("songs",o),console.log(t.songs),t.audiocontext.decodeAudioData(o.data,function(e){t.audiobuffer=e,console.log(e)},function(e){console.log(e)})},onError:function(e){console.log(e);var o={title:a.value,data:a};t.audiocontext.decodeAudioData(o.data,function(e){t.audiobuffer=e,console.log(e)},function(e){console.log(e)})}})}}}});</script>
+
+</dom-module>
+</body></html>
